@@ -6,8 +6,9 @@ from alertmanager_telegram.templating import render
 blueprint = Blueprint("messaging", __name__, template_folder="../templates")
 
 
-@blueprint.route("/alerts", methods=["POST"])
-def alerts():
+@blueprint.route("/alerts", defaults={'message_id': None}, methods=["POST"])
+@blueprint.route('/alerts/reply/<int:message_id>', methods=["POST"])
+def alerts(message_id):
     content = request.get_json()
 
     if "alerts" not in content or "status" not in content:
@@ -31,6 +32,7 @@ def alerts():
             parse_mode="HTML",
             disable_web_page_preview=True,
             text=text,
+            reply_to_message_id=message_id
         )
     except Exception:
         logger.exception("Exception during sending message")
