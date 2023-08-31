@@ -1,4 +1,5 @@
-FROM python:3.8-slim
+ARG ARCH
+FROM --platform=linux/${ARCH} python:3.8-slim
 
 WORKDIR /app
 COPY requirements.txt ./
